@@ -18,6 +18,26 @@ func (c *controller) rmServiceBinding(name, sid, nid, eid string, vip net.IP, in
 	return fmt.Errorf("not supported")
 }
 
+func (c *controller) getLBIndex(sid, nid string, ingressPorts []*PortConfig) int {
+	skey := serviceKey{
+		id:    sid,
+		ports: portConfigs(ingressPorts).String(),
+	}
+	c.Lock()
+	s, ok := c.serviceBindings[skey]
+	c.Unlock()
+
+	if !ok {
+		return 0
+	}
+
+	s.Lock()
+	lb := s.loadBalancers[nid]
+	s.Unlock()
+
+	return int(lb.fwMark)
+}
+
 func (sb *sandbox) populateLoadbalancers(ep *endpoint) {
 }
 
