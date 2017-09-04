@@ -1,3 +1,5 @@
+// +build solaris,freebsd +build !linux
+
 package portmapper
 
 import (

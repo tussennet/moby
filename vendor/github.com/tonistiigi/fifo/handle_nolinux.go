@@ -11,7 +11,7 @@ import (
 type handle struct {
 	fn  string
 	dev uint64
-	ino uint64
+	ino uint32
 }
 
 func getHandle(fn string) (*handle, error) {

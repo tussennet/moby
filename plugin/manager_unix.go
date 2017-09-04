@@ -1,3 +1,5 @@
+// +build solaris,freebsd +build !linux
+
 package plugin
 
 import (
