@@ -1,12 +1,13 @@
 # This file exists to support the non-Docker-based build requirements for
 # FreeBSD/Docker
 #
-export AUTO_GOPATH=1
+export AUTO_GO_PATH=1
 export DEST_DIR=$(PWD)/bundles/bin
-export RUNC_PATH="../../opencontainers/runc"
-export CONTAINERD_PATH="../../containerd/containerd"
-export LIBNETWORK_PATH="../libnetwork"
-export TINI_PATH="../../../tini"
+export GO_PATH=$(firstword $(subst :, ,$(GOPATH)))
+export RUNC_PATH="${GO_PATH}/src/github.com/opencontainers/runc"
+export CONTAINERD_PATH="${GO_PATH}/src/github.com/containerd/containerd"
+export LIBNETWORK_PATH="${GO_PATH}/src/github.com/docker/libnetwork"
+export TINI_PATH="${GO_PATH}/src/tini"
 
 CONTAINERD_REFSPEC=freebsd-compat-0.2
 
