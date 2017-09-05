@@ -16,6 +16,7 @@ binary: $(DEST_DIR)/docker-containerd $(DEST_DIR)/docker-proxy
 $(DEST_DIR)/docker-containerd: prepare
 	if [ ! -d $(CONTAINERD_PATH) ]; then \
 		git clone https://github.com/freebsd-docker/containerd.git $(CONTAINERD_PATH) && \
+		cd $(CONTAINERD_PATH) && \
 		git checkout $(CONTAINERD_REFSPEC); \
 	fi;
 	cd $(CONTAINERD_PATH) && \
