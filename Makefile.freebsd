@@ -16,12 +16,11 @@ all: binary
 
 binary: $(DEST_DIR)/docker-containerd $(DEST_DIR)/docker-proxy
 	./hack/make.sh binary
-	# Copy the contents of the symbolic links into bundles/bin for packaging
-	for f in $(wildcard bundles/latest/*/*); do \
-		if [ -h $$f ]; then \
-			cp $$(dirname $$f)/$$(readlink $$f) $(DEST_DIR)/$$(basename $$f) ; \
-		fi; \
-	done;
+	# Copy into bundles/bin for packaging
+	for f in bundles/latest/*/*; do \
+		[ -L "$$f" ] || continue; \
+		cp -f "$$(readlink -f $$f)" "$(DEST_DIR)/$${f##*/}"; \
+	done
 
 $(DEST_DIR)/docker-containerd: prepare
 	if [ ! -d $(CONTAINERD_PATH) ]; then \
