@@ -1,0 +1,23 @@
+# This file exists to support the non-Docker-based build requirements for
+# FreeBSD/Docker
+#
+export AUTO_GOPATH=1
+export RUNC_PATH="$(GOPATH)/src/github.com/opencontainers/runc"
+export CONTAINERD_PATH="$(GOPATH)/src/github.com/containerd/containerd"
+
+binary: containerd runc
+	./hack/make.sh binary
+
+containerd:
+	if [ ! -d $(CONTAINERD_PATH) ]; then \
+		git clone https://github.com/freebsd-docker/containerd.git $(CONTAINERD_PATH); \
+	fi;
+	cd $(CONTAINERD_PATH) && \
+		$(MAKE)
+
+runc:
+	if [ ! -d $(RUNC_PATH) ]; then \
+		git clone https://github.com/freebsd-docker/runc.git $(RUNC_PATH); \
+	fi;
+	cd $(RUNC_PATH) && \
+		$(MAKE)
