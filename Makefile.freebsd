@@ -2,18 +2,32 @@
 # FreeBSD/Docker
 #
 export AUTO_GOPATH=1
+export DEST_DIR=$(PWD)/bundles/bin
 export RUNC_PATH="$(GOPATH)/src/github.com/opencontainers/runc"
 export CONTAINERD_PATH="$(GOPATH)/src/github.com/containerd/containerd"
+export LIBNETWORK_PATH="$(GOPATH)/src/github.com/docker/libnetwork"
+export TINI_PATH="$(GOPATH)/tini"
 
-binary: containerd runc
+binary: $(DEST_DIR)/docker-containerd $(DEST_DIR)/docker-proxy
 	./hack/make.sh binary
 
-containerd:
+$(DEST_DIR)/docker-containerd: prepare
 	if [ ! -d $(CONTAINERD_PATH) ]; then \
 		git clone https://github.com/freebsd-docker/containerd.git $(CONTAINERD_PATH); \
 	fi;
 	cd $(CONTAINERD_PATH) && \
-		$(MAKE)
+		$(MAKE) && \
+		cp bin/containerd $(DEST_DIR)/docker-containerd && \
+		cp bin/containerd-shim $(DEST_DIR)/docker-containerd-shim && \
+		cp bin/ctr $(DEST_DIR)/docker-containerd-ctr
+
+$(DEST_DIR)/docker-proxy: prepare
+	if [ ! -d $(LIBNETWORK_PATH) ]; then \
+		git clone https://github.com/freebsd-docker/libnetwork.git $(LIBNETWORK_PATH); \
+	fi;
+	cd $(LIBNETWORK_PATH) && \
+		go build -o $(DEST_DIR)/docker-proxy github.com/docker/libnetwork/cmd/proxy
+
 
 runc:
 	if [ ! -d $(RUNC_PATH) ]; then \
@@ -21,3 +35,21 @@ runc:
 	fi;
 	cd $(RUNC_PATH) && \
 		$(MAKE)
+
+tini: check-depends
+	if [ ! -d $(TINI_PATH) ]; then \
+		git clone https://github.com/krallin/tini.git $(TINI_PATH); \
+	fi;
+	cd $(TINI_PATH) && \
+		cmake . && \
+		$(MAKE) tini-static
+
+check-depends:
+	echo ">> Verify that you have CMake installed"
+
+prepare: bundles/bin
+
+bundles/bin:
+	mkdir -p bundles/bin
+
+.PHONY: check-depends prepare
