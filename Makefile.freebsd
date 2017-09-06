@@ -19,7 +19,7 @@ binary: $(DEST_DIR)/docker-containerd $(DEST_DIR)/docker-proxy
 	# Copy the contents of the symbolic links into bundles/bin for packaging
 	for f in $(wildcard bundles/latest/*/*); do \
 		if [ -h $$f ]; then \
-			mp $$(dirname $$f)/$$(readlink $$f) $(DEST_DIR)/$$(basename $$f) ; \
+			cp $$(dirname $$f)/$$(readlink $$f) $(DEST_DIR)/$$(basename $$f) ; \
 		fi; \
 	done;
 
