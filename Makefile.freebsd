@@ -1,18 +1,24 @@
 # This file exists to support the non-Docker-based build requirements for
 # FreeBSD/Docker
 #
+# Hacking GOPATH to take the first directory in the list and use that to clone
+# our dependencies
+export GO_PATH=$(firstword $(subst :, ,$(GOPATH)))
 export AUTO_GO_PATH=1
 export DEST_DIR=$(PWD)/bundles/bin
-export GO_PATH=$(firstword $(subst :, ,$(GOPATH)))
 export RUNC_PATH="${GO_PATH}/src/github.com/opencontainers/runc"
 export CONTAINERD_PATH="${GO_PATH}/src/github.com/containerd/containerd"
+export CONTAINERD_REFSPEC=freebsd-compat-0.2
 export LIBNETWORK_PATH="${GO_PATH}/src/github.com/docker/libnetwork"
 export TINI_PATH="${GO_PATH}/src/tini"
 
-CONTAINERD_REFSPEC=freebsd-compat-0.2
+all: binary
 
 binary: $(DEST_DIR)/docker-containerd $(DEST_DIR)/docker-proxy
 	./hack/make.sh binary
+	for f in $(shell find bundles/latest/ -type l); do \
+		cp $$(dirname $$f)/$$(readlink $$f) $(DEST_DIR)/$$(basename $$f) ; \
+	done;
 
 $(DEST_DIR)/docker-containerd: prepare
 	if [ ! -d $(CONTAINERD_PATH) ]; then \
@@ -57,4 +63,4 @@ prepare: bundles/bin
 bundles/bin:
 	mkdir -p bundles/bin
 
-.PHONY: check-depends prepare
+.PHONY: check-depends prepare all binary
