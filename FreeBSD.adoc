@@ -2,6 +2,12 @@
 
 The FreeBSD port of Docker requires ZFS and FreeBSD 11.1-RELEASE or greater.
 
+[NOTE]
+====
+The current `freebsd-compat` branch is based off of the `v17.05.0-ce` tag from
+upstream.
+====
+
 == Participate
 
 
@@ -13,40 +19,63 @@ link:http://freenode.net[Freenode].
 [[prereqs]]
 == Prerequisites
 
-Please ensure the following packages are installed:
+Please ensure the following packages are installed in order to build from
+source:
 
 * `go`
 * `git`
-* `sqlite3`
 * `bash`
 * `ca_root_nss`
+* `libepoll-shim`
 
 [source,bash]
 ----
-sudo pkg install ca_root_nss bash sqlite3 git go
+sudo pkg install ca_root_nss bash git go libepoll-shim
 ----
 
 
 [[zfs]]
 === Setting up ZFS
 
-* Load the kernel module: `kldload zfs`
-* `sudo zfs mount -a`
+In order to provide storage for containers running on FreeBSD, Docker relies on
+ZFS underneath the hood. This means the FreeBSD system must have ZFS loaded,
+and active.
+
+==== Systems without ZFS-based disks
+
+[source,bash]
+----
+kldload zfs && \
+    dd if=/dev/zero of=/usr/local/dockerfs bs=1024K count=4000 && \
+    zpool create -f zroot /usr/local/dockerfs && \
+    zfs create -o mountpoint=/usr/docker zroot/docker
+----
+
+==== Systems with ZFS-based disks
+
+[source,bash]
+----
+zfs create -o mountpoint=/usr/docker zroot/docker
+----
+
+
 
 [[networking]]
 === Setting up networking
 
-Docker provides each container an unique ip address on shared network interface
 
-[source,bash]
-----
-docker run -it lexaguskov/freebsd ifconfig lo1
-----
+[[pf]]
+==== Setting up Packet Filer
 
-Docker configures basic networking for the container itself, but in order to
-route traffic in/out of the container, some manual
-link:https://www.freebsd.org/doc/handbook/firewalls-pf.html[Pf] configuration
-is required.
+In order to provide networking for containers, Docker must have access to
+Packet Filter (`pf`).
+
+* `sudo kldload pf`
+
+
+The example below provides a bridged network for Docker. If you installed
+FreeBSD/Docker via the `sysutils/docker-freebsd` port, this will already be
+configured for you.
 
 [source,bash]
 ----
@@ -220,28 +249,17 @@ To build on 11.1-RELEASE, assuming the <<prereqs>> have been installed:
 
 [source,bash]
 ----
-AUTO_GOPATH=1 ./hack/make.sh binary
+gmake -f Makefile.freebsd
 ----
 
-This should create the `docker` executable in `./bundles/latest/binary`.
+This should create the `docker` and `dockerd` executables in
+`./bundles/latest/`.  Please ensure that <<zfs, ZFS>> and <<networking,
+Networking>> are set up properly.
 
-Please ensure that <<zfs, ZFS>> and <<networking, Networking>> are set up
-properly.
+=== References
 
-=== Misc. Notes
+Below are a list of useful references for understanding both Docker and
+Docker/FreeBSD.
 
-Running the 1.7.0 version of the daemon in debug mode:
-
-[source,bash]
-----
-sudo docker -d -e jail -s zfs -g /usr/docker -D
-----
-
-
-Running the 1.8.0 version of the daemon in debug mode:
-
-[source,bash]
-----
-sudo ./bundles/latest/binary/docker daemon -D -e jail -s zfs -g /usr/docker
-----
-
+* link:https://blog.docker.com/2017/08/what-is-containerd-runtime/[What is containerd].
+* link:https://docs.docker.com/engine/userguide/storagedriver/zfs-driver/[Using the ZFS storage driver].
