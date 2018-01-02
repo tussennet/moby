@@ -1,4 +1,4 @@
-// +build freebsd darwin
+// +build darwin
 
 package operatingsystem // import "github.com/docker/docker/pkg/parsers/operatingsystem"
 
@@ -27,6 +27,5 @@ func GetOperatingSystemVersion() (string, error) {
 // IsContainerized returns true if we are running inside a container.
 // No-op on FreeBSD and Darwin, always returns false.
 func IsContainerized() (bool, error) {
-	// TODO: Implement jail detection for freeBSD
 	return false, errors.New("Cannot detect if we are in container")
 }
