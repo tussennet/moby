@@ -35,3 +35,11 @@ func (daemon *Daemon) stats(c *container.Container) (*types.StatsJSON, error) {
 func (daemon *Daemon) initCgroupsPath(path string) error {
     return nil
 }
+
+func (daemon *Daemon) setupSeccompProfile() error {
+	return nil
+}
+
+func setupDaemonProcess(config *config.Config) error {
+	return nil
+}
