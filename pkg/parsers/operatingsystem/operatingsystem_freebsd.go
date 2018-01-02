@@ -1,10 +1,11 @@
-// +build darwin
+// +build freebsd
 
-package operatingsystem // import "github.com/docker/docker/pkg/parsers/operatingsystem"
+package operatingsystem
 
 import (
 	"errors"
 	"os/exec"
+	"syscall"
 )
 
 // GetOperatingSystem gets the name of the current operating system.
@@ -18,7 +19,13 @@ func GetOperatingSystem() (string, error) {
 }
 
 // IsContainerized returns true if we are running inside a container.
-// No-op on FreeBSD and Darwin, always returns false.
 func IsContainerized() (bool, error) {
-	return false, errors.New("Cannot detect if we are in container")
+	jailed, err := syscall.Sysctl("security.jail.jailed")
+	if err != nil {
+		return false, errors.New("Cannot detect if we are in a jail")
+	}
+	if jailed[0] == 1 {
+		return true, nil
+	}
+	return false, nil
 }
