@@ -37,7 +37,7 @@ func parseMountTable(filter FilterFunc) ([]*Info, error) {
 
 		if filter != nil {
 			// filter out entries we're not interested in
-			skip, stop = filter(p)
+			skip, stop = filter(&mountinfo)
 			if skip {
 				continue
 			}

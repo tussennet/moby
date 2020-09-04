@@ -1,11 +1,12 @@
-package daemon
+package daemon // import "github.com/docker/docker/daemon"
+
 
 import (
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/libcontainerd"
+	libcontainerdtypes "github.com/docker/docker/libcontainerd/types"
 )
 
-func toContainerdResources(resources container.Resources) libcontainerd.Resources {
+func toContainerdResources(resources container.Resources) *libcontainerdtypes.Resources {
 	var r libcontainerd.Resources
 	return r
 }

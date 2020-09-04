@@ -1,4 +1,4 @@
-// +build !windows,!freebsd
+// +build !freebsd
 
 package libnetwork
 
