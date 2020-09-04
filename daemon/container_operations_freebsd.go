@@ -1,4 +1,4 @@
-package daemon
+package daemon // import "github.com/docker/docker/daemon"
 
 import (
 	"github.com/docker/docker/container"
@@ -40,5 +40,6 @@ func setupPathsAndSandboxOptions(container *container.Container, sboxOptions *[]
 	return nil
 }
 
-func initializeNetworkingPaths(container *container.Container, nc *container.Container) {
+func initializeNetworkingPaths(container *container.Container, nc *container.Container) error {
+	return nil
 }
