@@ -2,7 +2,7 @@ package libcontainerd
 
 import (
     "golang.org/x/net/context"
-	containerd "github.com/docker/containerd/api/grpc/types"
+	containerd "github.com/containerd/containerd/api/types"
 )
 
 type client struct {
