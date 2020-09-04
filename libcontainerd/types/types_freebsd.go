@@ -1,4 +1,4 @@
-package types // import "github.com/docker/docker/libcontainerd/types"
+package types
 
 import (
 	"time"
@@ -15,6 +15,15 @@ type Stats struct {}
 // InterfaceToStats returns a stats object from the platform-specific interface.
 func InterfaceToStats(read time.Time, v interface{}) *Stats {
 	return &Stats{}
+}
+
+// StateInfo contains description about the new state container has entered.
+type StateInfo struct {
+	//CommonStateInfo
+
+	// Platform specific StateInfo
+	OOMKilled bool
+	ExitCode int
 }
 
 // Resources defines updatable container resource values. TODO: it must match containerd upcoming API
