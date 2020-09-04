@@ -1,7 +1,6 @@
 package libcontainerd
 
 import (
-	containerd "github.com/containerd/containerd/api/types"
 	"github.com/opencontainers/runtime-spec/specs-go"
 )
 
@@ -30,14 +29,15 @@ type Summary struct{}
 
 // StateInfo contains description about the new state container has entered.
 type StateInfo struct {
-	CommonStateInfo
+	//CommonStateInfo
 
 	// Platform specific StateInfo
 	OOMKilled bool
+	ExitCode int
 }
 
 // Resources defines updatable container resource values.
 type Resources struct{}
 
 // Checkpoints contains the details of a checkpoint
-type Checkpoints containerd.ListCheckpointResponse
+//type Checkpoints containerd.ListCheckpointResponse

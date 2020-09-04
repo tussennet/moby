@@ -7,6 +7,6 @@ import (
 )
 
 func toContainerdResources(resources container.Resources) *libcontainerdtypes.Resources {
-	var r libcontainerd.Resources
+	var r *libcontainerdtypes.Resources
 	return r
 }

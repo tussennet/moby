@@ -796,10 +796,10 @@ func buildCreateEndpointOptions(c *container.Container, n libnetwork.Network, ep
 
 	defaultNetName := runconfig.DefaultDaemonNetworkMode().NetworkName()
 
-	if (!serviceDiscoveryOnDefaultNetwork() && n.Name() == defaultNetName) ||
-		c.NetworkSettings.IsAnonymousEndpoint {
-		createOptions = append(createOptions, libnetwork.CreateOptionAnonymous())
-	}
+	// if (!serviceDiscoveryOnDefaultNetwork() && n.Name() == defaultNetName) ||
+	// 	c.NetworkSettings.IsAnonymousEndpoint {
+	// 	createOptions = append(createOptions, libnetwork.CreateOptionAnonymous())
+	// }
 
 	if epConfig != nil {
 		ipam := epConfig.IPAMConfig
