@@ -1,5 +1,3 @@
-// +build linux windows
-
 package libnetwork
 
 import (

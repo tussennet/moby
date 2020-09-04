@@ -45,7 +45,7 @@ func setUnixOpt(fi os.FileInfo, stat *types.Stat, path string, seenFiles map[uin
 			stat.Devminor = int64(minor(uint64(s.Rdev)))
 		}
 
-		ino := s.Ino
+		ino := uint64(s.Ino)
 		linked := false
 		if seenFiles != nil {
 			if s.Nlink > 1 {
