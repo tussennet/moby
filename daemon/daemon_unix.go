@@ -28,6 +28,7 @@ import (
 	"github.com/docker/docker/pkg/containerfs"
 	"github.com/docker/docker/pkg/idtools"
 	"github.com/docker/docker/pkg/ioutils"
+
 	//"github.com/docker/docker/pkg/mount"
 	"github.com/docker/docker/pkg/parsers"
 	"github.com/docker/docker/pkg/parsers/kernel"
@@ -38,6 +39,7 @@ import (
 	nwconfig "github.com/docker/libnetwork/config"
 	"github.com/docker/libnetwork/netlabel"
 	"github.com/docker/libnetwork/options"
+
 	// "github.com/opencontainers/runc/libcontainer/cgroups"
 	rsystem "github.com/opencontainers/runc/libcontainer/system"
 	"github.com/opencontainers/runtime-spec/specs-go"
@@ -869,11 +871,13 @@ func (daemon *Daemon) initNetworkController(config *config.Config, activeSandbox
 	}
 
 	// Initialize default network on "host"
-	if n, _ := controller.NetworkByName("host"); n == nil {
-		if _, err := controller.NewNetwork("host", "host", "", libnetwork.NetworkOptionPersist(true)); err != nil {
-			return nil, fmt.Errorf("Error creating default \"host\" network: %v", err)
-		}
-	}
+	// if n, _ := controller.NetworkByName("host"); n == nil {
+	// 	logrus.Infof("!!!!!! inside initNetworkController 3.1")
+	// 	if _, err := controller.NewNetwork("host", "host", "", libnetwork.NetworkOptionPersist(true)); err != nil {
+	// 		logrus.Infof("!!!!!! inside initNetworkController 3.2")
+	// 		return nil, fmt.Errorf("Error creating default \"host\" network: %v", err)
+	// 	}
+	// }
 
 	// Clear stale bridge network
 	if n, err := controller.NetworkByName("bridge"); err == nil {
@@ -1402,24 +1406,7 @@ func setMayDetachMounts() error {
 }
 
 func setupOOMScoreAdj(score int) error {
-	f, err := os.OpenFile("/proc/self/oom_score_adj", os.O_WRONLY, 0)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	stringScore := strconv.Itoa(score)
-	_, err = f.WriteString(stringScore)
-	if os.IsPermission(err) {
-		// Setting oom_score_adj does not work in an
-		// unprivileged container. Ignore the error, but log
-		// it if we appear not to be in that situation.
-		if !rsystem.RunningInUserNS() {
-			logrus.Debugf("Permission denied writing %q to /proc/self/oom_score_adj", stringScore)
-		}
-		return nil
-	}
-
-	return err
+	return nil
 }
 
 func (daemon *Daemon) initCgroupsPath(path string) error {

@@ -24,14 +24,7 @@ func getPluginExecRoot(root string) string {
 }
 
 func (daemon *Daemon) cleanupMountsByID(id string) error {
-	logrus.Debugf("Cleaning up old mountid %s: start.", id)
-	f, err := os.Open("/proc/self/mountinfo")
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	return daemon.cleanupMountsFromReaderByID(f, id, mount.Unmount)
+	return nil
 }
 
 func (daemon *Daemon) cleanupMountsFromReaderByID(reader io.Reader, id string, unmount func(target string) error) error {
