@@ -872,9 +872,7 @@ func (daemon *Daemon) initNetworkController(config *config.Config, activeSandbox
 
 	// Initialize default network on "host"
 	// if n, _ := controller.NetworkByName("host"); n == nil {
-	// 	logrus.Infof("!!!!!! inside initNetworkController 3.1")
 	// 	if _, err := controller.NewNetwork("host", "host", "", libnetwork.NetworkOptionPersist(true)); err != nil {
-	// 		logrus.Infof("!!!!!! inside initNetworkController 3.2")
 	// 		return nil, fmt.Errorf("Error creating default \"host\" network: %v", err)
 	// 	}
 	// }
